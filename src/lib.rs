@@ -1,6 +1,9 @@
 use std::default::Default;
 use std::os::raw::c_double as jsnum;
 
+#[macro_use]
+mod macros;
+
 #[derive(Default)]
 struct State {
     clicks: usize,
@@ -31,21 +34,18 @@ extern "C" {
     fn draw_plus_one(x: f64, y: f64, opacity: f64);
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn init() {
+wasm_export_unsafe!(init() {
     STATE = Some(Default::default());
-}
+});
 
-#[no_mangle]
-pub extern "C" fn resize(w: jsnum, h: jsnum) {
+wasm_export!(resize(w: jsnum, h: jsnum) {
     with_state(|state| {
         state.width = w;
         state.height = h;
     });
-}
+});
 
-#[no_mangle]
-pub unsafe extern "C" fn draw() {
+wasm_export_unsafe!(draw() {
     clear();
     with_state(|state| {
         draw_clicks(state.clicks);
@@ -53,10 +53,9 @@ pub unsafe extern "C" fn draw() {
             draw_plus_one(anim.x, anim.y, anim.opacity);
         }
     });
-}
+});
 
-#[no_mangle]
-pub extern "C" fn click() {
+wasm_export!(click() {
     with_state(|s| {
         s.clicks += 1;
         s.point_animations.push(PointAnimation {
@@ -65,10 +64,9 @@ pub extern "C" fn click() {
             opacity: 1.0,
         });
     });
-}
+});
 
-#[no_mangle]
-pub extern "C" fn update(ts: jsnum) {
+wasm_export!(update(ts: jsnum) {
     let ts = 60.0 / ts;
     with_state(|s| {
         let mut anims_to_remove = vec![];
@@ -83,4 +81,4 @@ pub extern "C" fn update(ts: jsnum) {
             s.point_animations.remove(i);
         }
     });
-}
+});
