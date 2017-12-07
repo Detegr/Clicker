@@ -9,15 +9,34 @@ function imports() {
 		ctx.font = "18pt Arial";
 		ctx.fillText("Points: " + clicks, 0, 30);
 	}
-	function draw_plus_one(x, y, opacity) {
-		ctx.fillStyle = "rgba(0, 255, 0, " + opacity + ")";
+	function make_draw_candy() {
+		let candy = document.getElementById("candy");
+		let candy_width = candy.width * 5;
+		let candy_height = candy.height * 5;
+		return function(x, y) {
+			ctx.drawImage(candy,
+				x - candy_width/2,
+				y - candy_height/2,
+				candy_width,
+				candy_height);
+		}
+	}
+	function make_draw_plus_one(x, y, opacity) {
 		ctx.font = "32pt Arial";
-		ctx.fillText("+1", x, y);
+		let text = "+1";
+		let text_width = ctx.measureText(text).width;
+		return function(x, y, opacity) {
+			ctx.font = "32pt Arial";
+			ctx.fillStyle = "rgba(0, 255, 0, " + opacity + ")";
+			ctx.strokeStyle = "rgb(0, 0, 255)";
+			ctx.fillText(text, x - text_width/2, y);
+		}
 	}
 	return {
 		clear,
+		draw_candy: make_draw_candy(),
 		draw_clicks,
-		draw_plus_one,
+		draw_plus_one: make_draw_plus_one(),
 	};
 }
 

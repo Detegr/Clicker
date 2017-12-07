@@ -30,6 +30,7 @@ where
 
 extern "C" {
     fn clear();
+    fn draw_candy(x: f64, y: f64);
     fn draw_clicks(clicks: usize);
     fn draw_plus_one(x: f64, y: f64, opacity: f64);
 }
@@ -48,6 +49,7 @@ wasm_export!(resize(w: jsnum, h: jsnum) {
 wasm_export_unsafe!(draw() {
     clear();
     with_state(|state| {
+        draw_candy(state.width/2.0, state.height/2.0);
         draw_clicks(state.clicks);
         for anim in &state.point_animations {
             draw_plus_one(anim.x, anim.y, anim.opacity);
