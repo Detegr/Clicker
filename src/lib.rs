@@ -3,24 +3,14 @@ use std::os::raw::c_double as jsnum;
 
 #[macro_use]
 mod macros;
+mod update;
+use update::Update;
 
-enum AnimatedRotation {
-    Left(f64),
-    Right(f64),
-}
-impl Default for AnimatedRotation {
-    fn default() -> AnimatedRotation {
-        AnimatedRotation::Right(0.0)
-    }
-}
-impl AnimatedRotation {
-    fn get_rotation(&self) -> f64 {
-        match *self {
-            AnimatedRotation::Left(val) => val * 3.1415 / 180.0,
-            AnimatedRotation::Right(val) => val * 3.1415 / 180.0,
-        }
-    }
-}
+mod animatedrotation;
+use animatedrotation::AnimatedRotation;
+
+mod pointanimation;
+use pointanimation::PointAnimation;
 
 #[derive(Default)]
 struct State {
@@ -29,13 +19,6 @@ struct State {
     width: f64,
     height: f64,
     point_animations: Vec<PointAnimation>,
-}
-
-#[derive(Default)]
-struct PointAnimation {
-    x: f64,
-    y: f64,
-    opacity: f64,
 }
 
 static mut STATE: Option<State> = None;
@@ -90,18 +73,11 @@ wasm_export!(click() {
 wasm_export!(update(ts: jsnum) {
     let ts = 60.0 / ts;
     with_state(|s| {
-        let max_rotation = 8.0;
-        let rotation_speed = 0.05;
-        s.candy_rotation = match s.candy_rotation {
-            AnimatedRotation::Left(val) if val < -max_rotation => AnimatedRotation::Right(-max_rotation),
-            AnimatedRotation::Left(ref val) => AnimatedRotation::Left(val - rotation_speed * ts),
-            AnimatedRotation::Right(val) if val > max_rotation => AnimatedRotation::Left(max_rotation),
-            AnimatedRotation::Right(val) => AnimatedRotation::Right(val + rotation_speed * ts),
-        };
+        s.candy_rotation.update(ts);
+
         let mut anims_to_remove = vec![];
         for (i, anim) in s.point_animations.iter_mut().enumerate() {
-            anim.y -= 1.0 * ts;
-            anim.opacity -= 0.01 * ts;
+            anim.update(ts);
             if anim.opacity < 0.0 {
                 anims_to_remove.push(i);
             }
