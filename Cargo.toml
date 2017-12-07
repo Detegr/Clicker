@@ -1,0 +1,7 @@
+[package]
+authors = ["Antti Keränen <detegr@gmail.com>"]
+name = "clicker"
+version = "0.1.0"
+
+[lib]
+crate-type = ["cdylib"]
