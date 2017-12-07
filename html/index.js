@@ -3,7 +3,7 @@
 function imports() {
     var ctx = canvas.getContext("2d");
     function clear() {
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "#494f5c";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
     function draw_clicks(clicks) {
