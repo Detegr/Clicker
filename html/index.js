@@ -15,12 +15,16 @@ function imports() {
         let candy = document.getElementById("candy");
         let candy_width = candy.width * 5;
         let candy_height = candy.height * 5;
-        return function(x, y) {
+        return function(x, y, rotation) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
             ctx.drawImage(candy,
-                x - candy_width/2,
-                y - candy_height/2,
+                -candy_width/2,
+                -candy_height/2,
                 candy_width,
                 candy_height);
+            ctx.restore();
         }
     }
     function make_draw_plus_one(x, y, opacity) {
