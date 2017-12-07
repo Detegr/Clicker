@@ -1,3 +1,3 @@
 pub trait Update {
-    fn update(&mut self, ts: f64);
+    fn update(&mut self, dt: f64);
 }

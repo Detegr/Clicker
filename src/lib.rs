@@ -45,14 +45,14 @@ wasm_export!(click() {
     });
 });
 
-wasm_export!(update(ts: jsnum) {
-    let ts = 60.0 / ts;
+wasm_export!(update(dt: jsnum) {
+    let dt = (1000.0 / 60.0) / dt;
     with_state(|s| {
-        s.candy_rotation.update(ts);
+        s.candy_rotation.update(dt);
 
         let mut anims_to_remove = vec![];
         for (i, anim) in s.point_animations.iter_mut().enumerate() {
-            anim.update(ts);
+            anim.update(dt);
             if anim.opacity < 0.0 {
                 anims_to_remove.push(i);
             }

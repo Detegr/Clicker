@@ -18,19 +18,19 @@ impl AnimatedRotation {
     }
 }
 impl Update for AnimatedRotation {
-    fn update(&mut self, ts: f64) {
+    fn update(&mut self, dt: f64) {
         const MAX_ROTATION: f64 = 8.0;
-        const ROTATION_SPEED: f64 = 0.05;
+        const ROTATION_SPEED: f64 = 0.1;
 
         *self = match *self {
             AnimatedRotation::Left(val) if val < -MAX_ROTATION => AnimatedRotation::Right(
                 -MAX_ROTATION,
             ),
-            AnimatedRotation::Left(ref val) => AnimatedRotation::Left(val - ROTATION_SPEED * ts),
+            AnimatedRotation::Left(ref val) => AnimatedRotation::Left(val - ROTATION_SPEED * dt),
             AnimatedRotation::Right(val) if val > MAX_ROTATION => AnimatedRotation::Left(
                 MAX_ROTATION,
             ),
-            AnimatedRotation::Right(val) => AnimatedRotation::Right(val + ROTATION_SPEED * ts),
+            AnimatedRotation::Right(val) => AnimatedRotation::Right(val + ROTATION_SPEED * dt),
         };
     }
 }
